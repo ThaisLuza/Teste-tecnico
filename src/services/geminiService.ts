@@ -13,15 +13,19 @@ const instance = axios.create({
   baseURL: BASE_URL,
   headers: {
     Authorization: `Bearer ${API_KEY}`,
+    "Content-Type": "application/json",
   },
 });
 
-export const fetchDataFromGemini = async (endpoint: string) => {
+export const analyzeImageWithGemini = async (imageBase64: string) => {
   try {
-    const response = await instance.get(endpoint);
+    const response = await instance.post("/your-endpoint", {
+      image: imageBase64,
+    });
+
     return response.data;
   } catch (error) {
-    console.error("Error fetching data from Gemini:", error);
+    console.error("Error analyzing image with Gemini:", error);
     throw error;
   }
 };
