@@ -31,32 +31,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const pg_1 = require("pg");
+exports.analyzeImageWithGemini = void 0;
+const axios_1 = __importDefault(require("axios"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const pool = new pg_1.Pool({
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT || "5432", 10),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+const API_KEY = process.env.GEMINI_API_KEY;
+const BASE_URL = "https://ai.google.dev/gemini-api/docs/vision";
+if (!API_KEY) {
+    throw new Error("GEMINI_API_KEY is not defined");
+}
+const instance = axios_1.default.create({
+    baseURL: BASE_URL,
+    headers: {
+        Authorization: `Bearer ${API_KEY}`,
+        "Content-Type": "application/json",
+    },
 });
-const createTable = () => __awaiter(void 0, void 0, void 0, function* () {
+const analyzeImageWithGemini = (imageBase64) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield pool.query(`
-      CREATE TABLE IF NOT EXISTS your_table (
-        id SERIAL PRIMARY KEY,
-        reading_type VARCHAR(255) NOT NULL,
-        image_base64 TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
-        console.log("Tabela criada com sucesso!");
+        const response = yield instance.post("/your-endpoint", {
+            image: imageBase64,
+        });
+        return response.data;
     }
     catch (error) {
-        console.error("Erro ao criar tabela:", error);
+        console.error("Error analyzing image with Gemini:", error);
+        throw error;
     }
 });
-createTable();
-exports.default = pool;
+exports.analyzeImageWithGemini = analyzeImageWithGemini;

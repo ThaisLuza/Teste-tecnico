@@ -1,32 +1,30 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:latest
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: your_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
   app:
     build: .
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm start
+    depends_on:
+      - db
     environment:
-      NODE_ENV: development
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: meu_banco
-
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: meu_banco
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      DB_USER: your_user
+      DB_PASSWORD: your_password
+      DB_NAME: your_database
     ports:
-      - '5432:5432'
+      - "3000:3000"
 
 volumes:
-  pgdata:
+  postgres_data:

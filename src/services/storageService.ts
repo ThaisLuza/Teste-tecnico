@@ -12,5 +12,5 @@ export const saveImageToTemporaryStorage = async (
 
   await fs.promises.writeFile(imagePath, imageBuffer);
 
-  return `http://localhost:3001/temp/${guid}.png`;
+  return `http://localhost:3000/temp/${guid}.png`;
 };
