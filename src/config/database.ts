@@ -13,12 +13,16 @@ const pool = new Pool({
 const createTable = async () => {
   try {
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS your_table (
-        id SERIAL PRIMARY KEY,
-        reading_type VARCHAR(255) NOT NULL,
-        image_base64 TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
+    CREATE TABLE IF NOT EXISTS your_table (
+    id SERIAL PRIMARY KEY,
+    reading_type VARCHAR(255) NOT NULL,
+    image_base64 TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    confirmed BOOLEAN DEFAULT FALSE, 
+    confirmed_value INTEGER,
+    measure_uuid VARCHAR(36),
+    customer_code VARCHAR(255)      
+);
     `);
     console.log("Tabela criada com sucesso!");
   } catch (error) {

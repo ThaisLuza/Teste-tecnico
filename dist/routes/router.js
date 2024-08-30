@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const geminiController_1 = require("../controllers/geminiController");
+const analyzeImageController_1 = require("../controllers/analyzeImageController");
+const confirmController_1 = require("../controllers/confirmController");
 const router = (0, express_1.Router)();
 // router.get("/gemini-data", getGeminiData);
-router.post("/upload", geminiController_1.postAnalyzeImage);
+router.post("/upload", analyzeImageController_1.postAnalyzeImage);
+router.patch("/confirm", confirmController_1.patchConfirm);
 exports.default = router;

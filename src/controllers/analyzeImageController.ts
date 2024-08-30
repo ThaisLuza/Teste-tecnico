@@ -3,7 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import pool from "../config/database";
 
 export const postAnalyzeImage = async (req: Request, res: Response) => {
-  const { imageBase64, readingType } = req.body;
+  const { imageBase64, readingType, customerCode } = req.body;
+
+  console.log("customerCode", customerCode);
 
   try {
     if (!imageBase64 || !readingType) {
@@ -25,6 +27,11 @@ export const postAnalyzeImage = async (req: Request, res: Response) => {
     const existingReading = rows.length > 0;
 
     if (existingReading) {
+      const existingMeasureUuid = rows[0].measure_uuid;
+      await pool.query(
+        "UPDATE your_table SET confirmed = true WHERE measure_uuid = $1",
+        [existingMeasureUuid]
+      );
       return res.status(409).json({
         error_code: "DOUBLE_REPORT",
         error_description: "Leitura do mês já realizada",
@@ -35,7 +42,7 @@ export const postAnalyzeImage = async (req: Request, res: Response) => {
     const measureUuid = uuidv4();
     const imageUrl = `http://localhost:3000/temp/${measureUuid}.png`;
 
-    await insertReading(imageBase64, readingType);
+    await insertReading(imageBase64, readingType, measureUuid, customerCode);
 
     return res.status(200).json({
       image_url: imageUrl,
@@ -52,11 +59,16 @@ export const postAnalyzeImage = async (req: Request, res: Response) => {
   }
 };
 
-const insertReading = async (imageBase64: string, readingType: string) => {
+const insertReading = async (
+  imageBase64: string,
+  readingType: string,
+  measureUuid: string,
+  customerCode: string
+) => {
   try {
     await pool.query(
-      "INSERT INTO your_table (image_base64, reading_type) VALUES ($1, $2)",
-      [imageBase64, readingType]
+      "INSERT INTO your_table (image_base64, reading_type, measure_uuid,  customerCode) VALUES ($1, $2, $3, $4)",
+      [imageBase64, readingType, measureUuid, customerCode]
     );
   } catch (error) {
     console.error("Error inserting data:", error);
