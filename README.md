@@ -7,13 +7,13 @@ Este projeto desenvolve o back-end de um serviço para gerenciar a leitura indiv
 ## Funcionalidades
 
 1. **Endpoints da API:**
-   - **POST /upload**
+   - **POST api/upload**
      - Recebe uma imagem e um tipo de leitura.
      - Gera um UUID para a medição e armazena os dados no banco.
-   - **PATCH /confirm**
+   - **PATCH api/confirm**
      - Atualiza a medição com o valor confirmado.
      - Marca a medição como confirmada no banco de dados.
-   - **GET /<customer_code>/list**
+   - **GET api/<customer_code>/list**
      - Lista todas as medições realizadas por um cliente específico.
      - Permite filtrar por tipo de medição (`WATER` ou `GAS`).
 
