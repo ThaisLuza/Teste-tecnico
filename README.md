@@ -27,4 +27,8 @@ Este projeto desenvolve o back-end de um serviço para gerenciar a leitura indiv
 - **Docker** para criação e gerenciamento de containers.
 - **Git** para controle de versão.
 
+  O comando docker-compose up --build irá rodar a aplicação.
+
+
+
 
