@@ -13,11 +13,11 @@ const pool = new Pool({
 const createTable = async () => {
   try {
     await pool.query(`
-      DROP TABLE IF EXISTS your_table;
+      DROP TABLE IF EXISTS dataImage;
     `);
 
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS your_table (
+      CREATE TABLE IF NOT EXISTS dataImage (
         id SERIAL PRIMARY KEY,
         reading_type VARCHAR(255) NOT NULL,
         customer_code VARCHAR(255),

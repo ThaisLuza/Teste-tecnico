@@ -45,7 +45,7 @@ const pool = new pg_1.Pool({
 const createTable = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield pool.query(`
-      CREATE TABLE IF NOT EXISTS your_table (
+      CREATE TABLE IF NOT EXISTS dataImage (
         id SERIAL PRIMARY KEY,
         reading_type VARCHAR(255) NOT NULL,
         customer_code VARCHAR(255),

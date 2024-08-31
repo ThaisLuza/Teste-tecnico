@@ -14,10 +14,9 @@ export const patchConfirm = async (req: Request, res: Response) => {
 
   try {
     const { rows: existingRows } = await pool.query(
-      "SELECT * FROM your_table WHERE measure_uuid = $1",
+      "SELECT * FROM dataImage WHERE measure_uuid = $1",
       [measure_uuid]
     );
-    console.log("existingRows", existingRows);
     if (existingRows.length === 0) {
       return res.status(404).json({
         error_code: "MEASURE_NOT_FOUND",
@@ -26,7 +25,6 @@ export const patchConfirm = async (req: Request, res: Response) => {
     }
 
     const existingReading = existingRows[0];
-    console.log("existingReading", existingReading);
 
     if (existingReading.confirmed) {
       return res.status(409).json({
@@ -36,7 +34,7 @@ export const patchConfirm = async (req: Request, res: Response) => {
     }
 
     await pool.query(
-      "UPDATE your_table SET confirmed = true, confirmed_value = $1 WHERE measure_uuid = $2",
+      "UPDATE dataImage SET confirmed = true, confirmed_value = $1 WHERE measure_uuid = $2",
       [confirmed_value, measure_uuid]
     );
 

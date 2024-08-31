@@ -18,7 +18,7 @@ export const postAnalyzeImage = async (req: Request, res: Response) => {
     const currentYear = new Date().getFullYear();
 
     const { rows } = await pool.query(
-      "SELECT * FROM your_table WHERE reading_type = $1 AND EXTRACT(MONTH FROM created_at) = $2 AND EXTRACT(YEAR FROM created_at) = $3",
+      "SELECT * FROM dataImage WHERE reading_type = $1 AND EXTRACT(MONTH FROM created_at) = $2 AND EXTRACT(YEAR FROM created_at) = $3",
       [readingType, currentMonth, currentYear]
     );
 
@@ -27,7 +27,7 @@ export const postAnalyzeImage = async (req: Request, res: Response) => {
     if (existingReading) {
       const existingMeasureUuid = rows[0].measure_uuid;
       await pool.query(
-        "UPDATE your_table SET confirmed = true WHERE measure_uuid = $1",
+        "UPDATE dataImage SET confirmed = true WHERE measure_uuid = $1",
         [existingMeasureUuid]
       );
       return res.status(409).json({
@@ -63,10 +63,9 @@ const insertReading = async (
   measureUuid: string,
   customerCode: string
 ) => {
-  console.log("customerCode", customerCode);
   try {
     await pool.query(
-      "INSERT INTO your_table (image_base64, reading_type, measure_uuid, customer_code) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO dataImage (image_base64, reading_type, measure_uuid, customer_code) VALUES ($1, $2, $3, $4)",
       [imageBase64, readingType, measureUuid, customerCode]
     );
   } catch (error) {

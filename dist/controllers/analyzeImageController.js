@@ -27,11 +27,11 @@ const postAnalyzeImage = (req, res) => __awaiter(void 0, void 0, void 0, functio
         }
         const currentMonth = new Date().getMonth() + 1;
         const currentYear = new Date().getFullYear();
-        const { rows } = yield database_1.default.query("SELECT * FROM your_table WHERE reading_type = $1 AND EXTRACT(MONTH FROM created_at) = $2 AND EXTRACT(YEAR FROM created_at) = $3", [readingType, currentMonth, currentYear]);
+        const { rows } = yield database_1.default.query("SELECT * FROM dataImage WHERE reading_type = $1 AND EXTRACT(MONTH FROM created_at) = $2 AND EXTRACT(YEAR FROM created_at) = $3", [readingType, currentMonth, currentYear]);
         const existingReading = rows.length > 0;
         if (existingReading) {
             const existingMeasureUuid = rows[0].measure_uuid;
-            yield database_1.default.query("UPDATE your_table SET confirmed = true WHERE measure_uuid = $1", [existingMeasureUuid]);
+            yield database_1.default.query("UPDATE dataImage SET confirmed = true WHERE measure_uuid = $1", [existingMeasureUuid]);
             return res.status(409).json({
                 error_code: "DOUBLE_REPORT",
                 error_description: "Leitura do mês já realizada",
@@ -59,7 +59,7 @@ const postAnalyzeImage = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.postAnalyzeImage = postAnalyzeImage;
 const insertReading = (imageBase64, readingType, measureUuid, customerCode) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield database_1.default.query("INSERT INTO your_table (image_base64, reading_type, measure_uuid, customer_code) VALUES ($1, $2, $3, $4)", [imageBase64, readingType, measureUuid, customerCode]);
+        yield database_1.default.query("INSERT INTO dataImage (image_base64, reading_type, measure_uuid, customer_code) VALUES ($1, $2, $3, $4)", [imageBase64, readingType, measureUuid, customerCode]);
     }
     catch (error) {
         console.error("Error inserting data:", error);

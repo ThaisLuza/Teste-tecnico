@@ -29,7 +29,7 @@ const getMeasurements = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         // Construir a consulta SQL
         let query = `SELECT measure_uuid, created_at AS measure_datetime, reading_type AS measure_type, confirmed AS has_confirmed, image_base64 AS image_url 
-                 FROM your_table 
+                 FROM dataImage 
                  WHERE customer_code = $1`;
         const queryParams = [customer_code];
         if (measure_type) {

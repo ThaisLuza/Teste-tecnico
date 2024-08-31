@@ -27,7 +27,7 @@ const patchConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     try {
         // 2. Verificar se o código de leitura informado existe
-        const { rows: existingRows } = yield database_1.default.query("SELECT * FROM your_table WHERE measure_uuid = $1", [measure_uuid]);
+        const { rows: existingRows } = yield database_1.default.query("SELECT * FROM dataImage WHERE measure_uuid = $1", [measure_uuid]);
         console.log("existingRows", existingRows);
         if (existingRows.length === 0) {
             return res.status(404).json({
@@ -45,7 +45,7 @@ const patchConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         // 4. Salvar no banco de dados o novo valor informado
-        yield database_1.default.query("UPDATE your_table SET confirmed = true, confirmed_value = $1 WHERE measure_uuid = $2", [confirmed_value, measure_uuid]);
+        yield database_1.default.query("UPDATE dataImage SET confirmed = true, confirmed_value = $1 WHERE measure_uuid = $2", [confirmed_value, measure_uuid]);
         return res.status(200).json({
             success: true,
         });
