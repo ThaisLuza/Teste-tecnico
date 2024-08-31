@@ -16,7 +16,8 @@ exports.postAnalyzeImage = void 0;
 const uuid_1 = require("uuid");
 const database_1 = __importDefault(require("../config/database"));
 const postAnalyzeImage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { imageBase64, readingType } = req.body;
+    const { imageBase64, readingType, customer_code } = req.body;
+    console.log("customer_code", customer_code);
     try {
         if (!imageBase64 || !readingType) {
             return res.status(400).json({
@@ -29,6 +30,8 @@ const postAnalyzeImage = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const { rows } = yield database_1.default.query("SELECT * FROM your_table WHERE reading_type = $1 AND EXTRACT(MONTH FROM created_at) = $2 AND EXTRACT(YEAR FROM created_at) = $3", [readingType, currentMonth, currentYear]);
         const existingReading = rows.length > 0;
         if (existingReading) {
+            const existingMeasureUuid = rows[0].measure_uuid;
+            yield database_1.default.query("UPDATE your_table SET confirmed = true WHERE measure_uuid = $1", [existingMeasureUuid]);
             return res.status(409).json({
                 error_code: "DOUBLE_REPORT",
                 error_description: "Leitura do mês já realizada",
@@ -37,7 +40,7 @@ const postAnalyzeImage = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const measureValue = Math.floor(Math.random() * 100);
         const measureUuid = (0, uuid_1.v4)();
         const imageUrl = `http://localhost:3000/temp/${measureUuid}.png`;
-        yield insertReading(imageBase64, readingType);
+        yield insertReading(imageBase64, readingType, measureUuid, customer_code);
         return res.status(200).json({
             image_url: imageUrl,
             measure_value: measureValue,
@@ -54,9 +57,9 @@ const postAnalyzeImage = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.postAnalyzeImage = postAnalyzeImage;
-const insertReading = (imageBase64, readingType) => __awaiter(void 0, void 0, void 0, function* () {
+const insertReading = (imageBase64, readingType, measureUuid, customerCode) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield database_1.default.query("INSERT INTO your_table (image_base64, reading_type) VALUES ($1, $2)", [imageBase64, readingType]);
+        yield database_1.default.query("INSERT INTO your_table (image_base64, reading_type, measure_uuid, customer_code) VALUES ($1, $2, $3, $4)", [imageBase64, readingType, measureUuid, customerCode]);
     }
     catch (error) {
         console.error("Error inserting data:", error);

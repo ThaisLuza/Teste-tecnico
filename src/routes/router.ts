@@ -5,9 +5,8 @@ import { getMeasurements } from "../controllers/getMeasurementsController";
 
 const router = Router();
 
-// router.get("/gemini-data", getGeminiData);
 router.post("/upload", postAnalyzeImage);
 router.patch("/confirm", patchConfirm);
-router.get("/list", getMeasurements);
+router.get("/:customerCode/list", getMeasurements);
 
 export default router;

@@ -3,9 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import pool from "../config/database";
 
 export const postAnalyzeImage = async (req: Request, res: Response) => {
-  const { imageBase64, readingType, customerCode } = req.body;
-
-  console.log("customerCode", customerCode);
+  const { imageBase64, readingType, customer_code } = req.body;
 
   try {
     if (!imageBase64 || !readingType) {
@@ -42,7 +40,7 @@ export const postAnalyzeImage = async (req: Request, res: Response) => {
     const measureUuid = uuidv4();
     const imageUrl = `http://localhost:3000/temp/${measureUuid}.png`;
 
-    await insertReading(imageBase64, readingType, measureUuid, customerCode);
+    await insertReading(imageBase64, readingType, measureUuid, customer_code);
 
     return res.status(200).json({
       image_url: imageUrl,
@@ -65,9 +63,10 @@ const insertReading = async (
   measureUuid: string,
   customerCode: string
 ) => {
+  console.log("customerCode", customerCode);
   try {
     await pool.query(
-      "INSERT INTO your_table (image_base64, reading_type, measure_uuid,  customerCode) VALUES ($1, $2, $3, $4)",
+      "INSERT INTO your_table (image_base64, reading_type, measure_uuid, customer_code) VALUES ($1, $2, $3, $4)",
       [imageBase64, readingType, measureUuid, customerCode]
     );
   } catch (error) {

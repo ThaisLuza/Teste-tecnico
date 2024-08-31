@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
-import pool from "../config/database"; // Ajuste o caminho conforme necessário
+import pool from "../config/database";
 
 export const getMeasurements = async (req: Request, res: Response) => {
-  const { customerCode } = req.params; // Código do cliente
-  const { measure_type } = req.query; // Tipo de medida opcional
+  const { customerCode } = req.params;
+  const { measure_type } = req.query;
 
-  // Validar o parâmetro measure_type
   const measureType: any =
     typeof measure_type === "string" ? measure_type : undefined;
   const validMeasureTypes = ["WATER", "GAS"];
@@ -17,7 +16,6 @@ export const getMeasurements = async (req: Request, res: Response) => {
   }
 
   try {
-    // Construir a consulta SQL
     let query = `SELECT measure_uuid, created_at AS measure_datetime, reading_type AS measure_type, confirmed AS has_confirmed, image_base64 AS image_url 
                  FROM your_table 
                  WHERE customer_code = $1`;
@@ -25,11 +23,10 @@ export const getMeasurements = async (req: Request, res: Response) => {
     const queryParams: any[] = [customerCode];
 
     if (measure_type) {
-      query += ` AND reading_type ILIKE $2`; // Case insensitive search
+      query += ` AND reading_type ILIKE $2`;
       queryParams.push(measureType.toUpperCase());
     }
 
-    // Executar a consulta
     const { rows } = await pool.query(query, queryParams);
 
     if (rows.length === 0) {
@@ -39,7 +36,6 @@ export const getMeasurements = async (req: Request, res: Response) => {
       });
     }
 
-    // Formatar a resposta
     const measures = rows.map((row) => ({
       measure_uuid: row.measure_uuid,
       measure_datetime: row.measure_datetime,

@@ -16,8 +16,8 @@ exports.patchConfirm = void 0;
 const database_1 = __importDefault(require("../config/database"));
 const patchConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { measure_uuid, confirmed_value } = req.body;
-    console.log("measure_uuid", measure_uuid);
-    console.log("confirmed_value", confirmed_value);
+    console.log("measure_uuid", typeof measure_uuid);
+    console.log("confirmed_value", typeof confirmed_value);
     // 1. Validar o tipo de dados dos parâmetros enviados
     if (typeof measure_uuid !== "string" || typeof confirmed_value !== "number") {
         return res.status(400).json({
@@ -27,7 +27,8 @@ const patchConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
     try {
         // 2. Verificar se o código de leitura informado existe
-        const { rows: existingRows } = yield database_1.default.query("SELECT * FROM your_table WHERE id = $1", [measure_uuid]);
+        const { rows: existingRows } = yield database_1.default.query("SELECT * FROM your_table WHERE measure_uuid = $1", [measure_uuid]);
+        console.log("existingRows", existingRows);
         if (existingRows.length === 0) {
             return res.status(404).json({
                 error_code: "MEASURE_NOT_FOUND",
@@ -35,6 +36,7 @@ const patchConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         const existingReading = existingRows[0];
+        console.log("existingReading", existingReading);
         // 3. Verificar se o código de leitura já foi confirmado
         if (existingReading.confirmed) {
             return res.status(409).json({
@@ -43,7 +45,7 @@ const patchConfirm = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         // 4. Salvar no banco de dados o novo valor informado
-        yield database_1.default.query("UPDATE your_table SET confirmed = true, confirmed_value = $1 WHERE id = $2", [confirmed_value, measure_uuid]);
+        yield database_1.default.query("UPDATE your_table SET confirmed = true, confirmed_value = $1 WHERE measure_uuid = $2", [confirmed_value, measure_uuid]);
         return res.status(200).json({
             success: true,
         });
