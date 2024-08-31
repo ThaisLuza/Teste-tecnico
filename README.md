@@ -1,5 +1,4 @@
-Serviço de Leitura de Imagens para Consumo de Água e Gás
-Descrição
+
 Este projeto desenvolve o back-end de um serviço para gerenciar a leitura individualizada de consumo de água e gás. O serviço utiliza IA para obter medições através da foto de um medidor, oferecendo uma API RESTful para interagir com o sistema. O projeto é implementado em Node.js com TypeScript e utiliza Docker para criação e gestão de containers.
 
 Funcionalidades
